@@ -58,8 +58,8 @@ class Tree{
   void buildLeaf(float X,float Y,int i,float l,float w,float a0,float b0){
   float m=random(0,l*sin(b0));
   float n=random(0,30-3*i);
-  Y1=Y-(m*cos(a0)+n*sin(a0));
-  X1=X-(m*sin(a0)-n*cos(a0));
+  float Y1=Y-(m*cos(a0)+n*sin(a0));
+  float X1=X-(m*sin(a0)-n*cos(a0));
   //ellipseMode(RADIUS); 
   noStroke();
   fill(150.1,0,1,alphaLeaf);  
