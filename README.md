@@ -11,3 +11,7 @@ live demo on:  http://heyeshuang.github.io/my_tree_2d
 > Perform better on chrome(3+ seconds) than firefox(10+ seconds)
 
 > Don't Panic if you are using IE6,nothing would happen.
+
+#update
+
+rewrite using vanilla html5 canvas tag&coffeescript,now it's faster.
