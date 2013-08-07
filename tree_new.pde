@@ -27,9 +27,9 @@ void setup() {
 //    tree.buildLeaf(rootX,rootY,0,length0,weight0,PI/6,PI/2);
 //  }
 }
- 
+
 void draw() {
-  
+
 }
 class Tree{
   Tree(){
@@ -51,19 +51,20 @@ class Tree{
      }
      if (i<numOfLoop){
        for(int k=0;k<j;k++){
-        grow(X1,Y1,i+1,l*random(reduceL,reduceH),w*random(reduceL-0.2,reduceH-0.2),random(-anRange,anRange)+a0,random(-bRange,bRange)+b0);
+        grow(X1,Y1,i+1,l*random(reduceL,reduceH),w*random(reduceL-0.2,reduceH-0.2),
+            random(-anRange,anRange)+a0,random(-bRange,bRange)+b0);
        }
      }
   }
   void buildLeaf(float X,float Y,int i,float l,float w,float a0,float b0){
-  float m=random(0,l*sin(b0));
-  float n=random(0,30-3*i);
-  float Y1=Y-(m*cos(a0)+n*sin(a0));
-  float X1=X-(m*sin(a0)-n*cos(a0));
-  //ellipseMode(RADIUS); 
-  noStroke();
-  fill(150.1,0,1,alphaLeaf);  
-  ellipse(X1, Y1, rLeaf-3*i, rLeaf-3*i); 
+      float m=random(0,l*sin(b0));
+      float n=random(0,30-3*i);
+      float Y1=Y-(m*cos(a0)+n*sin(a0));
+      float X1=X-(m*sin(a0)-n*cos(a0));
+      //ellipseMode(RADIUS);
+      noStroke();
+      fill(150.1,0,1,alphaLeaf);
+      ellipse(X1, Y1, rLeaf-3*i, rLeaf-3*i);
   }
 }
 
