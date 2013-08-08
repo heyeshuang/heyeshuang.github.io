@@ -4,7 +4,11 @@ w0=cxt.canvas.width  = window.innerWidth
 h0=cxt.canvas.height = window.innerHeight
 cxt.fillStyle="#333333"
 cxt.fillRect(0,h0-30,w0,30)
-rootX=0.2*w0
+
+random=(m,n)->
+  Math.random()*(n-m)+m
+
+rootX=0.382*h0
 rootY=1.15*h0
 length0=0.4*h0
 weight0=w0/75
@@ -13,9 +17,24 @@ bRange=Math.PI/3
 reduceL=0.6
 reduceH=0.8
 rLeaf=w0/150
-
 numOfLoop=5
 numOfBud=7
+
+lColorH=155
+lColorS=60 #presents emotion
+lColorLA=random(40,90)
+lColorLR=10
+
+getToday = ->
+  now = new Date()
+  firstDay = new Date(now.getFullYear(), 0, 1)
+  dateDiff = now - firstDay
+  msPerDay = 1000 * 60 * 60 * 24
+  diffDays = Math.ceil(dateDiff / msPerDay)
+  return diffDays
+
+lColorH=getToday()*360/365
+
 Bud=(X,Y,X0,Y0,w,i)->
   @X=X
   @Y=Y
@@ -32,9 +51,6 @@ Leaf=(X,Y,r,i)->
 
 budList=[]
 leafList=[]
-
-random=(m,n)->
-  Math.random()*(n-m)+m
 
 makeBranch=(x1,y1,i,l,w,a0,b0)->
   x2=x1-l*Math.sin(a0)*Math.sin(b0)
@@ -78,7 +94,16 @@ for leaf in leafList
   cxt.beginPath()
   cxt.arc(leaf.X,leaf.Y,leaf.r,0,2*Math.PI)
   cxt.closePath()
-  cxt.fillStyle = "rgba(150,0,1, #{0.1})"
+  cxt.fillStyle=
+    "hsla(#{lColorH},#{lColorS}%,#{random(lColorLA-lColorLR,lColorLA+lColorLR)}%,0.1)"
+  # cxt.fillStyle="rgba(#{Math.round(Math.random()*255)},#{Math.round(Math.random()*255)},#{Math.round(Math.random()*255)},0.1)"
+  # it's a kind of ... crazy
+  # cxt.fillStyle = "rgba(#{leafColor[0]},
+    # #{leafColor[1]}, #{leafColor[2]}, #{0.1})"
   cxt.fill()
 
-#DONE:use vanilla html5 canvas
+cxt.textBaseline="bottom"
+cxt.font="10px italic Serif"
+cxt.fillStyle="#000000"
+cxt.fillText("#{lColorH},#{lColorS},#{lColorLA}",10,h0)
+
