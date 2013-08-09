@@ -1,7 +1,42 @@
 body {
-	background: #C0C0C0
+  background: #D0D0D0
 }
 
-* { margin: 0; padding: 0; }
- html, body { height: 100%; width: 100%; }
- canvas { display: block; }
+html, body {
+  margin: 0; padding: 0;
+  height: 100%; width: 100%;
+}
+canvas {
+  display: block;
+}
+.text {
+  margin: 20px;
+  padding:20px;
+  padding-right: 30px;
+  padding-left: 30px;
+  -webkit-box-shadow: 8px 8px 6px #AAAAAA;
+  -moz-box-shadow: 8px 8px 6px #AAAAAA;
+  box-shadow: 8px 8px 6px #AAAAAA;
+  /* line-height:0; */
+  opacity:0.5;
+  background: #afb4db;
+  /* border:0 solid red; */
+  position:fixed;
+  border-radius: 20px;
+  right:20px;
+  bottom:25px;
+}
+h1 {
+  font-family: 'Press Start 2P', fantasy, sans-serif;
+  margin-bottom: 0;
+}
+h2 {
+  margin-top: 0;
+  margin-bottom: 40px;
+  text-align:right;
+  font-family: 'Shadows Into Light Two', cursive;
+}
+.linklist a{
+  margin: 20px;
+  font-family: serif;
+}

@@ -9,19 +9,19 @@ w0 = cxt.canvas.width = window.innerWidth;
 
 h0 = cxt.canvas.height = window.innerHeight;
 
-cxt.fillStyle = "#333333";
+cxt.fillStyle = "#444444";
 
-cxt.fillRect(0, h0 - 30, w0, 30);
+cxt.fillRect(0, h0 - 18, w0, 30);
 
 random = function(m, n) {
   return Math.random() * (n - m) + m;
 };
 
-rootX = 0.382 * h0;
+rootX = 0.3 * w0;
 
-rootY = 1.15 * h0;
+rootY = 1.25 * h0;
 
-length0 = 0.4 * h0;
+length0 = 0.5 * h0;
 
 weight0 = w0 / 75;
 
@@ -43,7 +43,7 @@ lColorH = 155;
 
 lColorS = 60;
 
-lColorLA = random(40, 90);
+lColorLA = random(20, 90);
 
 lColorLR = 10;
 
@@ -145,3 +145,7 @@ cxt.font = "10px italic Serif";
 cxt.fillStyle = "#000000";
 
 cxt.fillText("" + lColorH + "," + lColorS + "," + lColorLA, 10, h0);
+
+cxt.textAlign = "right";
+
+cxt.fillText("mailto:yeshuanghe#gmail", w0 - 10, h0);
