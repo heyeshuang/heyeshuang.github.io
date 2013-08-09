@@ -37,6 +37,6 @@ h2 {
   font-family: 'Shadows Into Light Two', cursive;
 }
 .linklist a{
-  margin: 20px;
+  line-height: 150% ;
   font-family: serif;
 }
