@@ -31,12 +31,28 @@ h1 {
   margin-bottom: 0;
 }
 h2 {
-  margin-top: 0;
-  margin-bottom: 40px;
+  margin-top: 2%;
+  margin-bottom: 6%;
   text-align:right;
   font-family: 'Shadows Into Light Two', cursive;
 }
 .linklist a{
   line-height: 150% ;
   font-family: serif;
+}
+.control{
+  margin: 0; padding: 0;
+  position:fixed;
+  left:10px;
+  bottom:0;
+}
+.control a{
+  margin: 0; padding: 0;
+  font-size: 7px;
+  color:black;
+  text-decoration: none;
+}
+.control a:hover{
+  text-decoration:underline;
+  color: gray;
 }

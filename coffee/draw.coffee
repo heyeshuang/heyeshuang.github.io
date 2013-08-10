@@ -2,11 +2,17 @@ c=document.getElementById("myCanvas")
 cxt=c.getContext("2d")
 w0=cxt.canvas.width  = window.innerWidth
 h0=cxt.canvas.height = window.innerHeight
-cxt.fillStyle="#444444"
-cxt.fillRect(0,h0-18,w0,30)
 
 random=(m,n)->
   Math.random()*(n-m)+m
+
+getToday = ->
+  now = new Date()
+  firstDay = new Date(now.getFullYear(), 0, 1)
+  dateDiff = now - firstDay
+  msPerDay = 1000 * 60 * 60 * 24
+  diffDays = Math.ceil(dateDiff / msPerDay)
+  return diffDays
 
 rootX=0.3*w0
 rootY=1.25*h0
@@ -19,21 +25,13 @@ reduceH=0.8
 rLeaf=w0/150
 numOfLoop=5
 numOfBud=7
+lColor=
+  H:155
+  S:60 #presents emotion
+  LA:random(20,90)
+  LR:10
 
-lColorH=155
-lColorS=60 #presents emotion
-lColorLA=random(20,90)
-lColorLR=10
-
-getToday = ->
-  now = new Date()
-  firstDay = new Date(now.getFullYear(), 0, 1)
-  dateDiff = now - firstDay
-  msPerDay = 1000 * 60 * 60 * 24
-  diffDays = Math.ceil(dateDiff / msPerDay)
-  return diffDays
-
-lColorH=getToday()*360/365
+lColor.H=getToday()*360/365
 
 Bud=(X,Y,X0,Y0,w,i)->
   @X=X
@@ -75,36 +73,78 @@ makeBranch=(x1,y1,i,l,w,a0,b0)->
 
 makeBranch(rootX,rootY,0,length0,weight0,0,Math.PI/2)
 
-lastW=budList[0].w
-cxt.lineWidth=lastW
-cxt.beginPath()
-for bud in budList
-  if bud.w!=lastW
-    cxt.closePath()
-    cxt.stroke()
-    lastW=bud.w
-    cxt.lineWidth=bud.w
-    cxt.strokeStyle="rgba(0,0,0,#{1-bud.i/numOfLoop/1.1})"
-    cxt.beginPath()
-  cxt.moveTo(bud.X,bud.Y)
-  cxt.lineTo(bud.X0,bud.Y0)
-cxt.closePath()
-cxt.stroke()
-for leaf in leafList
-  cxt.beginPath()
-  cxt.arc(leaf.X,leaf.Y,leaf.r,0,2*Math.PI)
-  cxt.closePath()
-  cxt.fillStyle=
-    "hsla(#{lColorH},#{lColorS}%,#{random(lColorLA-lColorLR,lColorLA+lColorLR)}%,0.1)"
-  # cxt.fillStyle="rgba(#{Math.round(Math.random()*255)},#{Math.round(Math.random()*255)},#{Math.round(Math.random()*255)},0.1)"
-  # it's a kind of ... crazy
-  # cxt.fillStyle = "rgba(#{leafColor[0]},
-    # #{leafColor[1]}, #{leafColor[2]}, #{0.1})"
-  cxt.fill()
+canvasClean=()->
+  cxt.clearRect(0,0,w0,h0)
+  w0=cxt.canvas.width  = window.innerWidth
+  h0=cxt.canvas.height = window.innerHeight
+  return
 
-cxt.textBaseline="bottom"
-cxt.font="10px italic Serif"
-cxt.fillStyle="#000000"
-cxt.fillText("#{lColorH},#{lColorS},#{lColorLA}",10,h0)
-cxt.textAlign="right"
-cxt.fillText("mailto:yeshuanghe#gmail",w0-10,h0)
+drawBranch=(budList)->
+  lastW=budList[0].w
+  cxt.lineWidth=lastW
+  cxt.lineCap="round"
+  cxt.beginPath()
+  for bud in budList
+    if bud.w!=lastW
+      cxt.closePath()
+      cxt.stroke()
+      lastW=bud.w
+      cxt.lineWidth=bud.w
+      cxt.strokeStyle="rgba(0,0,0,#{1-bud.i/numOfLoop/1.1})"
+      cxt.beginPath()
+    cxt.moveTo(bud.X,bud.Y)
+    cxt.lineTo(bud.X0,bud.Y0)
+  cxt.closePath()
+  cxt.stroke()
+
+drawLeaf=(leafList,lColor,fuzzy=false)->
+  for leaf in leafList
+    cxt.beginPath()
+    cxt.arc(leaf.X,leaf.Y,leaf.r,0,2*Math.PI)
+    cxt.closePath()
+    if not fuzzy
+      cxt.fillStyle=
+        "hsla(#{lColor.H},"+
+        "#{lColor.S}%,"+
+        "#{random(lColor.LA-lColor.LR,lColor.LA+lColor.LR)}%,0.1)"
+    else
+      cxt.fillStyle=
+        "rgba(#{Math.round(Math.random()*255)},"+
+        "#{Math.round(Math.random()*255)},#{Math.round(Math.random()*255)},0.2)"
+    cxt.fill()
+
+drawMisc=()->
+  cxt.globalCompositeOperation="destination-over"
+  cxt.fillStyle="#444444"
+  cxt.fillRect(0,h0-18,w0,30)
+
+  cxt.globalCompositeOperation="source-over"
+  cxt.textBaseline="bottom"
+  cxt.font="10px italic Serif"
+  cxt.fillStyle="#000000"
+  # cxt.fillText("#{lColor.H},#{lColor.S},#{lColor.LA}",10,h0)
+  cxt.textAlign="right"
+  cxt.fillText("mailto:yeshuanghe#gmail",w0-10,h0)
+
+canvasClean()
+drawBranch(budList)
+drawLeaf(leafList,lColor)
+drawMisc()
+document.getElementById("fuzzy").addEventListener("click", ->
+  canvasClean()
+  drawBranch(budList)
+  drawLeaf(leafList,lColor,fuzzy=true)
+  drawMisc()
+  )
+document.getElementById("orange").addEventListener("click", ->
+  canvasClean()
+  drawBranch(budList)
+  # drawLeaf(leafList,lColor)
+  drawMisc()
+  )
+document.getElementById("restore").addEventListener("click", ->
+  canvasClean()
+  drawBranch(budList)
+  drawLeaf(leafList,lColor)
+  drawMisc()
+  )
