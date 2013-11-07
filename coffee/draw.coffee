@@ -27,8 +27,8 @@ numOfLoop=5
 numOfBud=7
 lColor=
   H:155
-  S:60 #presents emotion
-  LA:random(20,90)
+  S:75 #presents emotion
+  LA:random(20,70)
   LR:10
 
 lColor.H=getToday()*360/365
@@ -126,10 +126,13 @@ drawMisc=()->
   cxt.textAlign="right"
   cxt.fillText("mailto:yeshuanghe#gmail",w0-10,h0)
 
-canvasClean()
-drawBranch(budList)
-drawLeaf(leafList,lColor)
-drawMisc()
+setTimeout(->
+  canvasClean()
+  drawBranch(budList)
+  drawLeaf(leafList,lColor)
+  drawMisc()
+  return
+,100)
 document.getElementById("fuzzy").addEventListener("click", ->
   canvasClean()
   drawBranch(budList)
