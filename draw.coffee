@@ -67,15 +67,16 @@ makeBranch=(x1,y1,i,l,w,a0,b0)->
 
   if i<numOfLoop
     for j in [1..numOfBud]
-      arguments.callee(x2,y2,i+1,l*random(reduceL,reduceH),
+      makeBranch(x2,y2,i+1,l*random(reduceL,reduceH),
                       w*random(reduceL-0.2,reduceH-0.2),
                       random(-anRange,anRange)+a0,
                       random(-anRange,anRange)+b0)
-  budList.sort((a,b)->
-    a.i-b.i
-    ) #to be optimized
 
 makeBranch(rootX,rootY,0,length0,weight0,0,Math.PI/2)
+
+budList.sort((a,b)->
+  a.i-b.i
+  ) #to be optimized
 
 canvasClean=()->
   cxt.clearRect(0,0,w0,h0)
@@ -83,8 +84,8 @@ canvasClean=()->
   h0=cxt.canvas.height = window.innerHeight
   return
 
+budListForDraw=[]
 drawBranch=()->
-  budListForDraw=[]
   for j in [0...budList.length]
     bud=budList.shift()
     if budListForDraw.length==0 or
@@ -94,6 +95,7 @@ drawBranch=()->
     else
       animatedBranch(budListForDraw,0)
       budListForDraw=[]
+      budListForDraw.push(bud)
       break
 
   # cxt.beginPath()
@@ -111,6 +113,7 @@ drawBranch=()->
   # cxt.stroke()
 
 animatedBranch=(budList,t)->
+  # console.log(budList)
   for bud in budList
     cxt.lineWidth=bud.w
     cxt.strokeStyle="rgba(0,0,0,#{1-bud.i/numOfLoop/1.1})"

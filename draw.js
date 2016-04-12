@@ -1,4 +1,4 @@
-var Bud, Leaf, anRange, animatedBranch, bRange, budList, c, canvasClean, cxt, drawBranch, drawLeaf, drawMisc, getToday, h0, lColor, leafList, length0, makeBranch, maxLength, numOfBud, numOfLoop, rLeaf, random, reduceH, reduceL, rootX, rootY, w0, weight0;
+var Bud, Leaf, anRange, animatedBranch, bRange, budList, budListForDraw, c, canvasClean, cxt, drawBranch, drawLeaf, drawMisc, getToday, h0, lColor, leafList, length0, makeBranch, maxLength, numOfBud, numOfLoop, rLeaf, random, reduceH, reduceL, rootX, rootY, w0, weight0;
 
 c = document.getElementById("myCanvas");
 
@@ -76,7 +76,7 @@ budList = [];
 leafList = [];
 
 makeBranch = function(x1, y1, i, l, w, a0, b0) {
-  var j, k, m, n, o, r, ref, ref1, tmp, x2, x3, y2, y3;
+  var j, k, m, n, o, r, ref, ref1, results, tmp, x2, x3, y2, y3;
   x2 = x1 - l * Math.sin(a0) * Math.sin(b0);
   y2 = y1 - l * Math.cos(a0) * Math.sin(b0);
   budList.push(new Bud(x2, y2, x1, y1, w, i));
@@ -91,16 +91,19 @@ makeBranch = function(x1, y1, i, l, w, a0, b0) {
     }
   }
   if (i < numOfLoop) {
+    results = [];
     for (j = o = 1, ref1 = numOfBud; 1 <= ref1 ? o <= ref1 : o >= ref1; j = 1 <= ref1 ? ++o : --o) {
-      arguments.callee(x2, y2, i + 1, l * random(reduceL, reduceH), w * random(reduceL - 0.2, reduceH - 0.2), random(-anRange, anRange) + a0, random(-anRange, anRange) + b0);
+      results.push(makeBranch(x2, y2, i + 1, l * random(reduceL, reduceH), w * random(reduceL - 0.2, reduceH - 0.2), random(-anRange, anRange) + a0, random(-anRange, anRange) + b0));
     }
+    return results;
   }
-  return budList.sort(function(a, b) {
-    return a.i - b.i;
-  });
 };
 
 makeBranch(rootX, rootY, 0, length0, weight0, 0, Math.PI / 2);
+
+budList.sort(function(a, b) {
+  return a.i - b.i;
+});
 
 canvasClean = function() {
   cxt.clearRect(0, 0, w0, h0);
@@ -108,9 +111,10 @@ canvasClean = function() {
   h0 = cxt.canvas.height = window.innerHeight;
 };
 
+budListForDraw = [];
+
 drawBranch = function() {
-  var bud, budListForDraw, j, k, ref, results;
-  budListForDraw = [];
+  var bud, j, k, ref, results;
   results = [];
   for (j = k = 0, ref = budList.length; 0 <= ref ? k < ref : k > ref; j = 0 <= ref ? ++k : --k) {
     bud = budList.shift();
@@ -119,6 +123,7 @@ drawBranch = function() {
     } else {
       animatedBranch(budListForDraw, 0);
       budListForDraw = [];
+      budListForDraw.push(bud);
       break;
     }
   }
