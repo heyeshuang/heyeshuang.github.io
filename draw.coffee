@@ -25,6 +25,8 @@ reduceH=0.8
 rLeaf=w0/150
 numOfLoop=5
 numOfBud=7
+maxLength=200 # branches to draw one time
+maxLeaf=50
 lColor=
   H:155
   S:75 #presents emotion
@@ -48,7 +50,11 @@ Leaf=(X,Y,r,i)->
   @i=i
 
 budList=[]
+budListDone=[]
+budListForDraw=[]
 leafList=[]
+leafListDone=[]
+leafListForDraw=[]
 
 makeBranch=(x1,y1,i,l,w,a0,b0)->
   x2=x1-l*Math.sin(a0)*Math.sin(b0)
@@ -66,12 +72,16 @@ makeBranch=(x1,y1,i,l,w,a0,b0)->
 
   if i<numOfLoop
     for j in [1..numOfBud]
-      arguments.callee(x2,y2,i+1,l*random(reduceL,reduceH),
+      makeBranch(x2,y2,i+1,l*random(reduceL,reduceH),
                       w*random(reduceL-0.2,reduceH-0.2),
                       random(-anRange,anRange)+a0,
                       random(-anRange,anRange)+b0)
 
 makeBranch(rootX,rootY,0,length0,weight0,0,Math.PI/2)
+
+budList.sort((a,b)->
+  a.i-b.i
+  ) #to be optimized
 
 canvasClean=()->
   cxt.clearRect(0,0,w0,h0)
@@ -79,39 +89,79 @@ canvasClean=()->
   h0=cxt.canvas.height = window.innerHeight
   return
 
-drawBranch=(budList)->
-  lastW=budList[0].w
-  cxt.lineWidth=lastW
-  cxt.lineCap="round"
-  cxt.beginPath()
-  for bud in budList
-    if bud.w!=lastW
-      cxt.closePath()
-      cxt.stroke()
-      lastW=bud.w
-      cxt.lineWidth=bud.w
-      cxt.strokeStyle="rgba(0,0,0,#{1-bud.i/numOfLoop/1.1})"
-      cxt.beginPath()
-    cxt.moveTo(bud.X,bud.Y)
-    cxt.lineTo(bud.X0,bud.Y0)
-  cxt.closePath()
-  cxt.stroke()
+drawBranch=()->
+  for j in [0...budList.length]
+    bud=budList.shift()
+    budListDone.push(bud)
+    if budListForDraw.length==0 or
+    ( budListForDraw[budListForDraw.length-1].i==bud.i and
+    budListForDraw.length<maxLength )
+      budListForDraw.push(bud)
+    else
+      animatedBranch(budListForDraw,0)
+      budListForDraw=[]
+      budListForDraw.push(bud)
+      break
 
-drawLeaf=(leafList,lColor,fuzzy=false)->
-  for leaf in leafList
+  # cxt.beginPath()
+  # for bud in budList
+  #   if bud.w!=lastW
+  #     cxt.closePath()
+  #     cxt.stroke()
+  #     lastW=bud.w
+  #     cxt.lineWidth=bud.w
+  #     cxt.strokeStyle="rgba(0,0,0,#{1-bud.i/numOfLoop/1.1})"
+  #     cxt.beginPath()
+  #   cxt.moveTo(bud.X,bud.Y)
+  #   cxt.lineTo(bud.X0,bud.Y0)
+  # cxt.closePath()
+  # cxt.stroke()
+
+animatedBranch=(budList,t)->
+  # console.log(budList)
+  for bud in budList
+    cxt.lineWidth=bud.w
+    cxt.strokeStyle="rgba(0,0,0,#{1-bud.i/numOfLoop/1.1})"
+    cxt.beginPath()
+    cxt.moveTo(bud.X0+(bud.X-bud.X0)*t,bud.Y0+(bud.Y-bud.Y0)*t)
+    cxt.lineTo(bud.X0+(bud.X-bud.X0)*(t+0.1),bud.Y0+(bud.Y-bud.Y0)*(t+0.1))
+    cxt.closePath()
+    cxt.stroke()
+  if t<1-0.2
+    requestAnimationFrame(->
+      animatedBranch(budList,t+0.1)
+      )
+  else drawBranch()
+
+
+drawLeaf=()->
+  for j in [1..maxLeaf]
+    leaf=leafList.shift()
+    leafListDone.push(leaf)
     cxt.beginPath()
     cxt.arc(leaf.X,leaf.Y,leaf.r,0,2*Math.PI)
     cxt.closePath()
-    if not fuzzy
-      cxt.fillStyle=
-        "hsla(#{lColor.H},"+
-        "#{lColor.S}%,"+
-        "#{random(lColor.LA-lColor.LR,lColor.LA+lColor.LR)}%,0.1)"
-    else
-      cxt.fillStyle=
-        "rgba(#{Math.round(Math.random()*255)},"+
-        "#{Math.round(Math.random()*255)},#{Math.round(Math.random()*255)},0.2)"
+    cxt.fillStyle=
+      "hsla(#{lColor.H},"+
+      "#{lColor.S}%,"+
+      "#{random(lColor.LA-lColor.LR,lColor.LA+lColor.LR)}%,0.05) "
     cxt.fill()
+  requestAnimationFrame(drawLeaf)
+  # for leaf in leafList
+  #   cxt.beginPath()
+  #   cxt.arc(leaf.X,leaf.Y,leaf.r,0,2*Math.PI)
+  #   cxt.closePath()
+  #   if not fuzzy
+  #     cxt.fillStyle=
+  #       "hsla(#{lColor.H},"+
+  #       "#{lColor.S}%,"+
+  #       "#{random(lColor.LA-lColor.LR,lColor.LA+lColor.LR)}%,0.1)"
+  #   else
+  #     cxt.fillStyle=
+  #       "rgba(#{Math.round(Math.random()*255)},"+
+  #       "#{Math.round(Math.random()*255)},"+
+  #       "#{Math.round(Math.random()*255)},0.2)"
+  #   cxt.fill()
 
 drawMisc=()->
   cxt.globalCompositeOperation="destination-over"
@@ -128,26 +178,27 @@ drawMisc=()->
 
 setTimeout(->
   canvasClean()
-  drawBranch(budList)
-  drawLeaf(leafList,lColor)
+  drawBranch()
+  # drawLeaf(leafList,lColor)
+  drawLeaf()
   drawMisc()
   return
 ,100)
 document.getElementById("fuzzy").addEventListener("click", ->
   canvasClean()
-  drawBranch(budList)
+  drawBranch()
   drawLeaf(leafList,lColor,fuzzy=true)
   drawMisc()
   )
 document.getElementById("orange").addEventListener("click", ->
   canvasClean()
-  drawBranch(budList)
+  drawBranch()
   # drawLeaf(leafList,lColor)
   drawMisc()
   )
 document.getElementById("restore").addEventListener("click", ->
   canvasClean()
-  drawBranch(budList)
+  drawBranch()
   drawLeaf(leafList,lColor)
   drawMisc()
   )
