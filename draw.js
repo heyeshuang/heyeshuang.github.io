@@ -1,4 +1,4 @@
-var Bud, Leaf, anRange, animatedBranch, bRange, budList, budListForDraw, c, canvasClean, cxt, drawBranch, drawLeaf, drawMisc, getToday, h0, lColor, leafList, length0, makeBranch, maxLength, numOfBud, numOfLoop, rLeaf, random, reduceH, reduceL, rootX, rootY, w0, weight0;
+var Bud, Leaf, anRange, animatedBranch, bRange, budList, budListDone, budListForDraw, c, canvasClean, cxt, drawBranch, drawLeaf, drawMisc, getToday, h0, lColor, leafList, leafListDone, leafListForDraw, length0, makeBranch, maxLeaf, maxLength, numOfBud, numOfLoop, rLeaf, random, reduceH, reduceL, rootX, rootY, w0, weight0;
 
 c = document.getElementById("myCanvas");
 
@@ -44,7 +44,9 @@ numOfLoop = 5;
 
 numOfBud = 7;
 
-maxLength = 20;
+maxLength = 200;
+
+maxLeaf = 50;
 
 lColor = {
   H: 155,
@@ -73,7 +75,15 @@ Leaf = function(X, Y, r, i) {
 
 budList = [];
 
+budListDone = [];
+
+budListForDraw = [];
+
 leafList = [];
+
+leafListDone = [];
+
+leafListForDraw = [];
 
 makeBranch = function(x1, y1, i, l, w, a0, b0) {
   var j, k, m, n, o, r, ref, ref1, results, tmp, x2, x3, y2, y3;
@@ -111,13 +121,12 @@ canvasClean = function() {
   h0 = cxt.canvas.height = window.innerHeight;
 };
 
-budListForDraw = [];
-
 drawBranch = function() {
   var bud, j, k, ref, results;
   results = [];
   for (j = k = 0, ref = budList.length; 0 <= ref ? k < ref : k > ref; j = 0 <= ref ? ++k : --k) {
     bud = budList.shift();
+    budListDone.push(bud);
     if (budListForDraw.length === 0 || (budListForDraw[budListForDraw.length - 1].i === bud.i && budListForDraw.length < maxLength)) {
       results.push(budListForDraw.push(bud));
     } else {
@@ -151,25 +160,18 @@ animatedBranch = function(budList, t) {
   }
 };
 
-drawLeaf = function(leafList, lColor, fuzzy) {
-  var k, leaf, len, results;
-  if (fuzzy == null) {
-    fuzzy = false;
-  }
-  results = [];
-  for (k = 0, len = leafList.length; k < len; k++) {
-    leaf = leafList[k];
+drawLeaf = function() {
+  var j, k, leaf, ref;
+  for (j = k = 1, ref = maxLeaf; 1 <= ref ? k <= ref : k >= ref; j = 1 <= ref ? ++k : --k) {
+    leaf = leafList.shift();
+    leafListDone.push(leaf);
     cxt.beginPath();
     cxt.arc(leaf.X, leaf.Y, leaf.r, 0, 2 * Math.PI);
     cxt.closePath();
-    if (!fuzzy) {
-      cxt.fillStyle = ("hsla(" + lColor.H + ",") + (lColor.S + "%,") + ((random(lColor.LA - lColor.LR, lColor.LA + lColor.LR)) + "%,0.1)");
-    } else {
-      cxt.fillStyle = ("rgba(" + (Math.round(Math.random() * 255)) + ",") + ((Math.round(Math.random() * 255)) + "," + (Math.round(Math.random() * 255)) + ",0.2)");
-    }
-    results.push(cxt.fill());
+    cxt.fillStyle = ("hsla(" + lColor.H + ",") + (lColor.S + "%,") + ((random(lColor.LA - lColor.LR, lColor.LA + lColor.LR)) + "%,0.05) ");
+    cxt.fill();
   }
-  return results;
+  return requestAnimationFrame(drawLeaf);
 };
 
 drawMisc = function() {
@@ -187,6 +189,7 @@ drawMisc = function() {
 setTimeout(function() {
   canvasClean();
   drawBranch();
+  drawLeaf();
   drawMisc();
 }, 100);
 

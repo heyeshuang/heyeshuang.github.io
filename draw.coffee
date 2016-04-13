@@ -25,7 +25,8 @@ reduceH=0.8
 rLeaf=w0/150
 numOfLoop=5
 numOfBud=7
-maxLength=20
+maxLength=200 # branches to draw one time
+maxLeaf=50
 lColor=
   H:155
   S:75 #presents emotion
@@ -49,7 +50,11 @@ Leaf=(X,Y,r,i)->
   @i=i
 
 budList=[]
+budListDone=[]
+budListForDraw=[]
 leafList=[]
+leafListDone=[]
+leafListForDraw=[]
 
 makeBranch=(x1,y1,i,l,w,a0,b0)->
   x2=x1-l*Math.sin(a0)*Math.sin(b0)
@@ -84,10 +89,10 @@ canvasClean=()->
   h0=cxt.canvas.height = window.innerHeight
   return
 
-budListForDraw=[]
 drawBranch=()->
   for j in [0...budList.length]
     bud=budList.shift()
+    budListDone.push(bud)
     if budListForDraw.length==0 or
     ( budListForDraw[budListForDraw.length-1].i==bud.i and
     budListForDraw.length<maxLength )
@@ -129,21 +134,34 @@ animatedBranch=(budList,t)->
   else drawBranch()
 
 
-drawLeaf=(leafList,lColor,fuzzy=false)->
-  for leaf in leafList
+drawLeaf=()->
+  for j in [1..maxLeaf]
+    leaf=leafList.shift()
+    leafListDone.push(leaf)
     cxt.beginPath()
     cxt.arc(leaf.X,leaf.Y,leaf.r,0,2*Math.PI)
     cxt.closePath()
-    if not fuzzy
-      cxt.fillStyle=
-        "hsla(#{lColor.H},"+
-        "#{lColor.S}%,"+
-        "#{random(lColor.LA-lColor.LR,lColor.LA+lColor.LR)}%,0.1)"
-    else
-      cxt.fillStyle=
-        "rgba(#{Math.round(Math.random()*255)},"+
-        "#{Math.round(Math.random()*255)},#{Math.round(Math.random()*255)},0.2)"
+    cxt.fillStyle=
+      "hsla(#{lColor.H},"+
+      "#{lColor.S}%,"+
+      "#{random(lColor.LA-lColor.LR,lColor.LA+lColor.LR)}%,0.05) "
     cxt.fill()
+  requestAnimationFrame(drawLeaf)
+  # for leaf in leafList
+  #   cxt.beginPath()
+  #   cxt.arc(leaf.X,leaf.Y,leaf.r,0,2*Math.PI)
+  #   cxt.closePath()
+  #   if not fuzzy
+  #     cxt.fillStyle=
+  #       "hsla(#{lColor.H},"+
+  #       "#{lColor.S}%,"+
+  #       "#{random(lColor.LA-lColor.LR,lColor.LA+lColor.LR)}%,0.1)"
+  #   else
+  #     cxt.fillStyle=
+  #       "rgba(#{Math.round(Math.random()*255)},"+
+  #       "#{Math.round(Math.random()*255)},"+
+  #       "#{Math.round(Math.random()*255)},0.2)"
+  #   cxt.fill()
 
 drawMisc=()->
   cxt.globalCompositeOperation="destination-over"
@@ -162,6 +180,7 @@ setTimeout(->
   canvasClean()
   drawBranch()
   # drawLeaf(leafList,lColor)
+  drawLeaf()
   drawMisc()
   return
 ,100)
