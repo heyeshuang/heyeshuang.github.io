@@ -22,7 +22,7 @@ getToday = function() {
   return diffDays;
 };
 
-rootX = 0.3 * w0;
+rootX = 0.4 * w0;
 
 rootY = 1.25 * h0;
 
@@ -190,26 +190,26 @@ setTimeout(function() {
   canvasClean();
   drawBranch();
   drawLeaf();
-  drawMisc();
+  // drawMisc();
 }, 100);
 
-document.getElementById("fuzzy").addEventListener("click", function() {
-  var fuzzy;
-  canvasClean();
-  drawBranch();
-  drawLeaf(leafList, lColor, fuzzy = true);
-  return drawMisc();
-});
+// document.getElementById("fuzzy").addEventListener("click", function() {
+//   var fuzzy;
+//   canvasClean();
+//   drawBranch();
+//   drawLeaf(leafList, lColor, fuzzy = true);
+//   return drawMisc();
+// });
 
-document.getElementById("orange").addEventListener("click", function() {
-  canvasClean();
-  drawBranch();
-  return drawMisc();
-});
+// document.getElementById("orange").addEventListener("click", function() {
+//   canvasClean();
+//   drawBranch();
+//   return drawMisc();
+// });
 
-document.getElementById("restore").addEventListener("click", function() {
-  canvasClean();
-  drawBranch();
-  drawLeaf(leafList, lColor);
-  return drawMisc();
-});
+// document.getElementById("restore").addEventListener("click", function() {
+//   canvasClean();
+//   drawBranch();
+//   drawLeaf(leafList, lColor);
+//   return drawMisc();
+// });
