@@ -4,9 +4,9 @@ c = document.getElementById("myCanvas");
 
 cxt = c.getContext("2d");
 
-w0 = cxt.canvas.width = window.innerWidth;
+w0 = cxt.canvas.width = document.documentElement.clientWidth;
 
-h0 = cxt.canvas.height = window.innerHeight;
+h0 = cxt.canvas.height = document.documentElement.clientHeight;
 
 random = function(m, n) {
   return Math.random() * (n - m) + m;
